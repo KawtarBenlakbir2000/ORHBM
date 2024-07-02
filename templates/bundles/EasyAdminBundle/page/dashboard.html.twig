@@ -1,0 +1,134 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+            font-family: 'Roboto', sans-serif; /* Police moderne */
+        }
+
+        .refresh-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Transition pour hover et clic */
+        }
+
+        .refresh-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Agrandir légèrement au survol */
+        }
+
+        .refresh-button:active {
+            transform: scale(0.95); /* Réduire légèrement lors du clic */
+        }
+
+        .refresh-text {
+            font-size: 24px; /* Augmentation de la taille de la police */
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333; /* Couleur de texte douce */
+        }
+
+        #loading {
+            display: none;
+            padding-top: 20px;
+        }
+
+        .loading-text {
+            color: #dc3545; /* Utilisation d'une classe pour le style du texte de chargement */
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .loading-image {
+            width: 200px;
+            margin-top: 10px;
+        }
+
+        #message {
+            margin-top: 20px;
+        }
+
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h1 class="display-4">Gestion des données</h1>
+                <p class="lead">Cliquez sur le bouton ci-dessous pour mettre à jour les données.</p>
+                <div id="initialMessage" class="alert alert-info" role="alert">Les données sont à jour.</div>
+                <p id="lastUpdatedText">Dernière mise à jour : Chargement en cours...</p>
+                <p class="refresh-text">Rafraîchir les données</p>
+                <button id="refreshButton" class="refresh-button">Rafraîchir</button>
+                <div id="loading" class="py-5">
+                    <p class="loading-text">Cela va prendre quelques minutes, veuillez patienter</p>
+                    <img class="loading-image" src="build/images/hourglass.gif" alt="Loading GIF">
+                </div>
+                <div id="message"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour récupérer la date et l'heure de la dernière mise à jour
+        function fetchLastUpdated() {
+            fetch('{{ path('admin_last_updated') }}', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('lastUpdatedText').innerText = 'Dernière mise à jour : ' + data.last_updated;
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération de la dernière mise à jour', error);
+                });
+        }
+
+        // Appeler la fonction au chargement de la page pour afficher la dernière mise à jour initiale
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchLastUpdated();
+        });
+
+        // Ajouter l'écouteur d'événement pour le bouton de rafraîchissement
+        document.getElementById('refreshButton').addEventListener('click', function() {
+            document.getElementById('initialMessage').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            fetch('{{ path('admin_refresh_data') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '{{ csrf_token('refresh_data') }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('message').innerHTML = '<div class="alert alert-success" role="alert">' + data.message + '</div>';
+                        fetchLastUpdated(); // Mettre à jour la date de dernière mise à jour après le rafraîchissement
+                    } else {
+                        document.getElementById('message').innerHTML = '<div class="alert alert-danger" role="alert">' + data.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('message').innerHTML = '<div class="alert alert-danger" role="alert">Erreur lors du rafraîchissement des données.</div>';
+                })
+                .finally(() => {
+                    setTimeout(function() {
+                        document.getElementById('loading').style.display = 'none';
+                    }, 3000); // Durée de votre processus de rafraîchissement
+                });
+        });
+    </script>
+{% endblock %}

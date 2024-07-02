@@ -1,0 +1,348 @@
+{% extends 'home/index.html.twig' %}
+
+{% block content %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+               input {
+            padding: 4px 10px 4px 10px;
+            border-radius: 0px;
+            background-color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #CFD8DC;
+            color: #000;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        input[type=date]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            display: none;
+        }
+
+        input:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            outline-width: 0;
+        }
+        .page-link {
+            color: black
+        }
+
+        .pagination.pagination-rounded-flat .page-item {
+            margin: 0 .25rem
+        }
+
+        .pagination-rounded-flat{
+
+        }
+
+        .pagination-success .page-item.active .page-link,
+        a {
+            background: #00c689;
+            border-color: #00c689
+        }
+
+        .pagination.pagination-rounded-flat .page-item .page-link, a {
+            border: none;
+            border-radius: 50px;
+        }
+               .card-header {
+                   cursor: pointer;
+               }
+    </style>
+<style>body{background-color: #f9f9fa}.flex{-webkit-box-flex: 1;-ms-flex: 1 1 auto;flex: 1 1 auto}@media (max-width:991.98px){.padding{padding: 1.5rem}}@media (max-width:767.98px){.padding{padding: 1rem}}.padding{padding: 5rem}.card{background: #fff;border-width: 0;border-radius: .25rem;box-shadow: 0 1px 3px rgba(0, 0, 0, .05);margin-bottom: 1.5rem}.card{position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;background-clip: border-box;border: 1px solid rgba(19, 24, 44, .125);border-radius: .25rem}.list-item{position: relative;border:black;display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;min-width: 0;word-wrap: break-word}.list-item.block .media{border-bottom-left-radius: 0;border-bottom-right-radius: 0}.list-item.block .list-content{padding: 1rem}.w-40{width: 40px !important;height: 40px !important}.avatar{position: relative;line-height: 1;border-radius: 500px;white-space: nowrap;font-weight: 700;border-radius: 100%;display: -ms-flexbox;display: flex;-ms-flex-pack: center;justify-content: center;-ms-flex-align: center;align-items: center;-ms-flex-negative: 0;flex-shrink: 0;border-radius: 500px;box-shadow: 0 5px 10px 0 rgba(50, 50, 50, .15)}.avatar img{border-radius: inherit;width: 100%}.gd-primary{color: #fff;border: none;background: #448bff linear-gradient(45deg, #448bff, #44e9ff)}.flex{-webkit-box-flex: 1;-ms-flex: 1 1 auto;flex: 1 1 auto}.text-color{color: #5e676f}.text-sm{font-size: .825rem}.h-1x{height: 1.25rem;overflow: hidden;display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical}list-row .list-item{-ms-flex-direction: row;flex-direction: row;-ms-flex-align: center;align-items: center;padding: .75rem .625rem}.list-item{position: relative;display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;min-width: 0;word-wrap: break-word}.list-row .list-item>*{padding-left: .625rem;padding-right: .625rem}.dropdown{position: relative}a:focus, a:hover{text-decoration: none}.list-item{background: white;border-bottom: 1px solid #ddd;padding: 10px 0;margin-bottom: 10px;}</style>
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/Sortable.js"></script>
+    <script>
+        $(document).ready(function() {
+            var example2Left = document.getElementById('example2-left');
+            var example2Right = document.getElementById('example2-right');
+            new Sortable(example2Left, {
+                group: {
+                    name: 'shared',
+                    pull: 'clone'
+                },
+                animation: 150
+            });
+            new Sortable(example2Right, {
+                group: {
+                    name: 'shared',
+                    pull: 'clone'
+                },
+                animation: 150
+            });
+        });
+    </script>
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div class="row">
+                <div class="card col-sm-12" style="border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 8px rgba(16,16,16,0.48); transition: box-shadow 0.3s ease;">
+                    <div class="container">
+                        <p style="font-size: 30px" class="fw-normal mb-0 py-4">Listes des Incidents - <span style="color: #ff8400;font-family: 'Arial Narrow';font-size: 25px">Capitalisation</span></p>
+
+                        <!-- Search and Filter Section -->
+                        <form method="get" action="{{ path('GI') }}" class="mb-4">
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-md-3">
+                                    <input type="text" name="name" class="form-control" placeholder="Chercher par identifiant" value="{{ name }}">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label for="startDate" class="mr-2 mb-0">De</label>
+                                    <input type="date" id="startDate" name="startDate" class="form-control mr-2" value="{{ startDate }}">
+                                    <label for="endDate" class="mr-2 mb-0">à</label>
+                                    <input type="date" id="endDate" name="endDate" class="form-control" value="{{ endDate }}">
+                                </div>
+                                <div class="col-md-5 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success mr-2">
+                                        <span class="fa fa-filter"></span>&nbsp;&nbsp;Filtrer
+                                    </button>
+                                    <a href="{{ path('GI') }}" class="btn btn-secondary">
+                                        <i class="fas fa-arrows-rotate fa-lg"></i>&nbsp;&nbsp;Réinitialiser
+                                    </a>
+                                </div>
+                            </div>
+
+
+
+                        </form>
+                        {% if incidentF is not empty %}
+                            {% set incidents = incidentF %}
+                        {% else %}
+                            {% set incidents = incidents %}
+                        {% endif %}
+                        <div class="list list-row card" id="sortable" data-sortable-id="0" aria-dropeffect="move" >
+                            <div class="row" id="list-items-container">
+                                {% for incident in incidents|slice(0, (incidents|length // 2) + (incidents|length % 2)) %}
+                                <div class="col-md-6" id="example2-left">
+                                    <div class="list-item" data-id="13" data-item-sortable-id="0" draggable="true" role="option" aria-grabbed="false" style="position: relative;">
+                                        <div class="flex">
+                                            {{ incident.identifiant }}
+                                            <div class="item-except text-muted text-sm h-1x">{{ incident.description|truncate_custom(50, '...') }}</div>
+                                        </div>
+                                        <div class="py-2 ">
+                                            <div class="item-date text-muted text-sm d-none d-md-block">{{ incident.date|date('Y-m-d') }}</div>
+                                        </div>
+                                        {% if incident.resolu %} <span class="text-sm h-1x"  style="color: #3be827; position: absolute; top: 40px; right: 10px;"><i class="fas fa-check"></i> Resolu</span>
+                                        {% else %}
+                                            <span class=" text-sm h-1x" style="color: #ff0000; position: absolute; top: 40px; right: 10px;"><i class="fas fa-times"></i> Non Résolu</span>{% endif %}
+                                        <button class="view-funcs" style="position: absolute; top: 10px; right: 10px;" data-toggle="modal" data-target="#incidentModal{{ incident.id }}"><i class="fas fa-caret-right fa-lg"></i></button>
+                                    </div>
+                                    <div class="modal fade" id="incidentModal{{ incident.id }}" tabindex="-1" aria-labelledby="incidentModalLabel{{ incident.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="incidentModalLabel{{ incident.id }}">Incident Details</h5>
+                                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid  mx-auto">
+                                                        <div class="row d-flex justify-content-center">
+                                                            <div class="col-lg-14">
+                                                                <div class="card border-0">
+                                                                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                                                        <div>
+                                                                            <h4 class="mb-1">{{ incident.identifiant }}</h4>
+                                                                            <small class="text-muted">{% if incident.onglet is not none and incident.onglet.nom is not none %}
+                                                                                    {{ incident.onglet.nom }}
+                                                                                {% else %}
+                                                                                    Aucune interface affecté
+                                                                                {% endif %}</small>
+                                                                        </div>
+                                                                        <span>{{ incident.date|date('Y-m-d') }}</span>
+                                                                    </div>
+                                                                    <div class="card-body px-3 px-md-5">
+                                                                        <div class="card mb-3">
+                                                                            <div class="card-header Desc d-flex justify-content-between align-items-center" id="HeaderDesc">
+                                                                                <h6>Description</h6><span class="mr-2 fa fa-reorder"></span>
+                                                                            </div>
+                                                                            <div id="BodyDesc{{ incident.id }}" class="collapse card-body Desc1">
+                                                                                {{ incident.description }}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card mb-3">
+                                                                            <div class="card-header solut d-flex justify-content-between align-items-center" id="HeaderSolut">
+                                                                                <h6>Solution</h6><span class="mr-2 fa fa-reorder"></span>
+                                                                            </div>
+                                                                            <div id="BodySolut{{ incident.id }}" class="collapse card-body solut1">
+                                                                                {% if incident.solution %}
+                                                                                    <div class="d-flex align-items-center">
+                                                                                        <a href="{{ asset('uploads/'~ incident.solution) }}" class="btn btn-success btn-sm" target="_blank">
+                                                                                            <i class="fas fa-cloud-download-alt"></i> Télécharger la solution
+                                                                                        </a>
+                                                                                    </div>
+                                                                                {% else %}
+                                                                                    Aucune solution uploadée
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <script>$(document).ready(function(){
+                                            $('.Desc').click(function(){
+                                                $('#BodyDesc{{ incident.id }}').collapse('toggle');
+                                            });
+                                            $('.solut').click(function(){
+                                                $('#BodySolut{{ incident.id }}').collapse('toggle');
+                                            });
+                                        });</script>
+                                {% endfor %}
+                                {% for incident in incidents|slice((incidents|length // 2) + (incidents|length % 2), incidents|length) %}
+                                <div class="col-md-6 " id="example2-right">
+                                    <div class="list-item" data-id="13" data-item-sortable-id="0" draggable="true" role="option" aria-grabbed="false" style="position: relative;">
+                                        <div class="flex">
+                                            {{ incident.identifiant }}
+                                            <div class="item-except text-muted text-sm h-1x">{{ incident.description|truncate_custom(50, '...') }}</div>
+                                        </div>
+                                        <div class="py-2">
+                                            <div class="item-date text-muted text-sm d-none d-md-block">{{ incident.date|date('Y-m-d') }}</div>
+                                        </div>
+                                        {% if incident.resolu %} <span class="text-sm h-1x"  style="color: #3be827; position: absolute; top: 40px; right: 10px;"><i class="fas fa-check"></i> Resolu</span>
+                                        {% else %}
+                                            <span class="text-sm h-1x"  style="color: #ff0000; position: absolute; top: 40px; right: 10px;"><i class="fas fa-times"></i> Non Résolu</span>{% endif %}
+                                        <button class="view-funcs" style="position: absolute; top: 10px; right: 10px;" data-toggle="modal" data-target="#incidentModal{{ incident.id }}"><i class="fas fa-caret-right fa-lg"></i></button>
+                                    </div>
+                                    <div class="modal fade" id="incidentModal{{ incident.id }}" tabindex="-1" aria-labelledby="incidentModalLabel{{ incident.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="incidentModalLabel{{ incident.id }}">Incident Details</h5>
+                                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid  mx-auto">
+                                                        <div class="row d-flex justify-content-center">
+                                                            <div class="col-lg-14">
+                                                                <div class="card border-0">
+                                                                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                                                        <div>
+                                                                            <h4 class="mb-1">{{ incident.identifiant }}</h4>
+                                                                            <small class="text-muted" >{% if incident.onglet is not none and incident.onglet.nom is not none %}
+                                                                                    {{ incident.onglet.nom }}
+                                                                                {% else %}
+                                                                                    Aucune interface affecté
+                                                                                {% endif %}</small>
+
+                                                                        </div>
+                                                                        <span>{{ incident.date|date('Y-m-d') }}</span>
+
+                                                                    </div>
+                                                                    <div class="card-body px-3 px-md-5">
+                                                                        <div class="card mb-3">
+                                                                            <div class="card-header Desc d-flex justify-content-between align-items-center" id="HeaderDesc">
+                                                                                <h6>Description</h6><span class="mr-2 fa fa-reorder"></span>
+                                                                            </div>
+                                                                            <div id="BodyDesc{{ incident.id }}" class="collapse card-body Desc1">
+                                                                                {{ incident.description }}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card mb-3">
+                                                                            <div class="card-header solut d-flex justify-content-between align-items-center" id="HeaderSolut">
+                                                                                <h6>Solution</h6><span class="mr-2 fa fa-reorder"></span>
+                                                                            </div>
+                                                                            <div id="BodySolut{{ incident.id }}" class="collapse card-body solut1">
+                                                                                {% if incident.solution %}
+                                                                                    <a href="{{ asset('uploads/'~ incident.solution) }}" target="_blank">Télécharger la solution</a>
+                                                                                {% else %}
+                                                                                    Aucune solution uploadée
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <script>$(document).ready(function(){
+                                            $('.Desc').click(function(){
+                                                $('#BodyDesc{{ incident.id }}').collapse('toggle');
+                                            });
+                                            $('.solut').click(function(){
+                                                $('#BodySolut{{ incident.id }}').collapse('toggle');
+                                            });
+                                        });</script>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="pagination-container" style="text-align: center; margin-top: 20px;">
+                            <ul class="pagination d-flex justify-content-center flex-wrap pagination-rounded-flat pagination-success">
+                                <li class="page-item"><a class="page-link" href="#" data-abc="true" id="prev-btn"><i class="fa fa-angle-left"></i></a></li>
+                                <span id="page-info"></span>
+                                <li class="page-item"><a class="page-link" href="#" data-abc="true" id="next-btn"><i class="fa fa-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const itemsPerPage = 8; // Nombre d'éléments par page
+            let currentPage = 1; // Page actuelle
+
+            const items = Array.from(document.querySelectorAll('.list-item'));
+            const totalPages = Math.ceil(items.length / itemsPerPage);
+
+            function renderPage(page) {
+                const start = (page - 1) * itemsPerPage;
+                const end = page * itemsPerPage;
+
+                items.forEach((item, index) => {
+                    if (index >= start && index < end) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                document.getElementById('page-info').textContent = `Page ${page} of ${totalPages}`;
+            }
+
+            document.getElementById('prev-btn').addEventListener('click', (event) => {
+                event.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                }
+            });
+
+            document.getElementById('next-btn').addEventListener('click', (event) => {
+                event.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                }
+            });
+
+            // Afficher la première page au chargement
+            renderPage(currentPage);
+        });
+    </script>
+
+{% endblock %}

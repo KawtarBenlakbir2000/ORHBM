@@ -1,0 +1,57 @@
+{% extends 'home/index.html.twig' %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" />
+
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+    <div class="col-lg-12  py-5 px-5">
+
+            <div class="card col-lg-12  py-5 px-5"  style="border: 1px solid #ddd;border-radius: 10px;box-shadow: 0 4px 8px rgba(16,16,16,0.48);transition: box-shadow 0.3s ease;">
+                <table class="table table-grey" id="myTable" >
+                    <thead class="table-dark">
+                    <tr >
+                        <th>Module</th>
+                        <th>interface</th>
+                        <th>Fonctionnalités</th>
+                        <th>code source</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    {% for onglet in onglets %}
+                        {% for fonction in onglet.actions %}
+                            <tr>
+                                <td>{{ fonction.onglet.module.nom }}</td>
+                                <td>{{ fonction.onglet.nom }}</td>
+                                <td><a style="color:#ff8400;text-decoration: none;" href="http://localhost{{ fonction.codeSource}}">{{ fonction.nom}}</a></td>
+                                <td><a style="color:#111111" href="phpstorm://open?url=file:/{{ fonction.codeSource}}">{{ fonction.codeSource}}</a></td>
+                            </tr>
+
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+    </div>
+    <script>let table = new DataTable('#myTable', {
+            pageLength: 7,
+            paging: true,
+            // Enable searching
+            searching: true,
+            language: {
+                lengthMenu: "Afficher _MENU_ ",
+                zeroRecords: "Aucun enregistrement trouvé",
+                info: "Affichage de _START_ à _END_ sur _TOTAL_ lignes",
+                infoEmpty: "Affichage de 0 sur 0 ligne",
+                search: "",
+                searchPlaceholder: "Rechercher...",
+                paginate: {
+                    first: "<<",
+                    last: ">>",
+                    next: ">",
+                    previous: "<"
+                }
+            }
+        });</script>
+{% endblock %}

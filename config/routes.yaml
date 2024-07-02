@@ -1,0 +1,29 @@
+index:
+    path: /admin
+    controller: App\Controller\Admin\DashboardController::index
+
+home:
+    path: /Esupport
+    controller: App\Controller\HomeController::index
+
+interface:
+    path: /Details_interface
+    controller: App\Controller\HomeController::detailsInterface
+
+admin_refresh_data:
+    path: /admin/refresh-data
+    controller: App\Controller\Admin\AcceuilController::refreshData
+    methods: ['POST']
+
+admin_last_updated:
+    path: /admin/last_updated
+    controller: App\Controller\Admin\AcceuilController::getLastUpdated
+    methods: ['GET']
+
+GI:
+    path: /Gincident
+    controller: App\Controller\HomeController::incident
+
+controllers:
+    resource: ../src/Controller/
+    type: annotation
