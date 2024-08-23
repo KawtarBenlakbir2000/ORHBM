@@ -32,12 +32,13 @@ class IncidentCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->onlyOnIndex()->setColumns(6),
-            TextEditorField::new('description', 'Description')->setColumns(6),
+            TextField::new('description', 'Description')->setColumns(6),
             TextField::new('identifiant', 'Identifiant')->setColumns(6),
             ChoiceField::new('type', 'Type')->setChoices(['incident' => 'Incident', 'anomalie' => 'Anomalie'])->setColumns(6),
             AssociationField::new('onglet', 'Onglet'),
             DateField::new('date', 'Date')->setColumns(6)->setFormat('yyyy-MM-dd'),
             BooleanField::new('resolu', 'Resolu')->setColumns(6),
+            TextEditorField::new('commentaire', 'Commentaire')->setColumns(6),
             ImageField::new('solution', 'Upload fichier')->setFormType(FileUploadType::class)->setUploadDir('public/uploads')->setColumns(6),
         ];
     }

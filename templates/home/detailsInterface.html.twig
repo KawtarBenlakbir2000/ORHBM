@@ -6,52 +6,151 @@
 
     <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 
-    <div class="col-lg-12  py-5 px-5">
+    <style>
+        body {
+            background: #f5f5f5; /* Light background for the page */
+            color: #333; /* Default text color */
+        }
+        #myTable {
+            font-size: 14px;
+            color: #333; /* Default text color for the table */
+            background-color: #fff; /* White background for the table */
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 2px solid ; /* Orange border for the table */
+            border-radius: 10px;
+            overflow: hidden; /* Ensure border-radius works */
+        }
+        #myTable th, #myTable td {
+            padding: 12px;
+            text-align: center; /* Center-align text */
+            border: 1px solid #444; /* Darker border for contrast */
+        }
+        #myTable thead {
+            background-color: #000; /* Black background for the table header */
+            color: #ff8400; /* Orange text color for the table header */
+        }
+        #myTable tbody tr {
+            background-color: #fff; /* White background for the table rows */
+        }
+        #myTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Light grey background for alternate rows */
+        }
+        #myTable tbody tr:hover {
+            background-color: #ff8400; /* Orange background on row hover */
+            color: #fff; /* White text color on row hover */
+        }
+        .filter-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .filter-container label {
+            margin-right: 10px;
+        }
+        .filter-container select {
+            margin-left: 10px;
+            padding: 5px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: auto; /* Align title to the left */
+            color: #000; /* Black color */
+        }
+        .title span {
+            color: #ff8400; /* Orange color for span */
+        }
+        .card {
+            height: 600px; /* Adjust the height as needed */
+            overflow-y: auto; /* Add vertical scroll */
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Dark shadow for better contrast */
+            transition: box-shadow 0.3s ease;
+            background-color: #fff; /* White background for the card */
+        }
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.75);
+        }
+        .module-column, .interface-column, .fonctionnalites-column, .code-source-column {
+            border-left: 2px solid #ddd; /* Add border between columns */
+        }
+        #myTable thead th {
+            border-left: none; /* Remove left border from thead */
+        }
+        #myTable tbody tr {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
 
-            <div class="card col-lg-12  py-5 px-5"  style="border: 1px solid #ddd;border-radius: 10px;box-shadow: 0 4px 8px rgba(16,16,16,0.48);transition: box-shadow 0.3s ease;">
-                <table class="table table-grey" id="myTable" >
-                    <thead class="table-dark">
-                    <tr >
-                        <th>Module</th>
-                        <th>interface</th>
-                        <th>Fonctionnalités</th>
-                        <th>code source</th>
-                    </tr>
-                    </thead>
-                    <tbody >
-                    {% for onglet in onglets %}
-                        {% for fonction in onglet.actions %}
-                            <tr>
-                                <td>{{ fonction.onglet.module.nom }}</td>
-                                <td>{{ fonction.onglet.nom }}</td>
-                                <td><a style="color:#ff8400;text-decoration: none;" href="http://localhost{{ fonction.codeSource}}">{{ fonction.nom}}</a></td>
-                                <td><a style="color:#111111" href="phpstorm://open?url=file:/{{ fonction.codeSource}}">{{ fonction.codeSource}}</a></td>
-                            </tr>
+    <div class="col-lg-12 py-5 px-5">
 
-                        {% endfor %}
+        <div class="filter-container">
+            <div class="title">Liste de <span>Fonctionnalités</span></div>
+            <label for="moduleFilter">Filtrer par module:</label>
+            <select id="moduleFilter">
+                <option value="">Tous</option>
+                {% for module in modules %}
+                    <option value="{{ module.nom }}">{{ module.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="card col-lg-12 py-5 px-5">
+            <table class="table table-grey" id="myTable">
+                <thead class="table-dark">
+                <tr>
+                    <th>Module</th>
+                    <th>Interface</th>
+                    <th>Fonctionnalités</th>
+                    <th>Code Source</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for onglet in onglets %}
+                    {% for fonction in onglet.actions %}
+                        <tr>
+                            <td class="module-column">{{ fonction.onglet.module.nom }}</td>
+                            <td class="interface-column">{{ fonction.onglet.nom }}</td>
+                            <td class="fonctionnalites-column"><a style="color:#ff8400;text-decoration: none;" href="http://localhost{{ fonction.codeSource }}">{{ fonction.nom }}</a></td>
+                            <td class="code-source-column"><a style="color:#111111" href="phpstorm://open?url=file:/{{ fonction.codeSource }}">{{ fonction.codeSource }}</a></td>
+                        </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <script>let table = new DataTable('#myTable', {
-            pageLength: 7,
-            paging: true,
-            // Enable searching
-            searching: true,
-            language: {
-                lengthMenu: "Afficher _MENU_ ",
-                zeroRecords: "Aucun enregistrement trouvé",
-                info: "Affichage de _START_ à _END_ sur _TOTAL_ lignes",
-                infoEmpty: "Affichage de 0 sur 0 ligne",
-                search: "",
-                searchPlaceholder: "Rechercher...",
-                paginate: {
-                    first: "<<",
-                    last: ">>",
-                    next: ">",
-                    previous: "<"
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let table = new DataTable('#myTable', {
+                pageLength: 7,
+                paging: true,
+                searching: true,
+                ordering: true,
+                language: {
+                    lengthMenu: "Afficher _MENU_ ",
+                    zeroRecords: "Aucun enregistrement trouvé",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ lignes",
+                    infoEmpty: "Affichage de 0 sur 0 ligne",
+                    search: "",
+                    searchPlaceholder: "Rechercher...",
+                    paginate: {
+                        first: "<<",
+                        last: ">>",
+                        next: ">",
+                        previous: "<"
+                    }
                 }
-            }
-        });</script>
+            });
+
+            // Custom filter by module
+            document.getElementById('moduleFilter').addEventListener('change', function() {
+                table.column(0).search(this.value).draw();
+            });
+        });
+    </script>
+
 {% endblock %}

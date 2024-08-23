@@ -1,5 +1,4 @@
 <?php
-// src/Controller/Admin/CustomController.php
 
 namespace App\Controller\Admin;
 
@@ -24,47 +23,43 @@ class AcceuilController extends AbstractController
         $this->session = $session;
     }
 
-    /**
-     * @Route("/admin/last-updated", name="admin_last_updated", methods={"GET"})
-     */
+
     public function getLastUpdated(): JsonResponse
     {
-        $lastUpdated = $this->session->get('last_updated');
+        try {
+            // Récupération de la dernière mise à jour depuis la session
+            $lastUpdated = $this->session->get('last_updated');
 
-        if (!$lastUpdated) {
-            $lastUpdated = new \DateTime('now');
-            $this->session->set('last_updated', $lastUpdated);
+            // Si la dernière mise à jour n'existe pas, on crée une nouvelle date
+            if (!$lastUpdated || !$lastUpdated instanceof \DateTime) {
+                $lastUpdated = new \DateTime('now');
+                $this->session->set('last_updated', $lastUpdated);
+            }
+
+            // Retourne la réponse JSON avec la date formatée
+            return $this->json([
+                'last_updated' => $lastUpdated->format('Y-m-d H:i:s')
+            ]);
+
+        } catch (\Exception $e) {
+            // Gestion des erreurs
+            return $this->json(['error' => 'Une erreur est survenue lors de la récupération de la dernière mise à jour.'], 500);
         }
 
-        return $this->json([
-            'last_updated' => $lastUpdated->format('Y-m-d H:i:s')
-        ]);
     }
 
-    /**
-     * @Route("/admin/refresh-data", name="admin_refresh_data", methods={"POST"})
-     */
-    public function refreshData(Request $request): JsonResponse
+
+
+
+    public function scheduleDailyTask(): JsonResponse
     {
-        // Vérifiez le token CSRF pour la sécurité
-        $csrfToken = $request->headers->get('X-CSRF-TOKEN');
-        if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('refresh_data', $csrfToken))) {
-            return new JsonResponse(['success' => false, 'message' => 'Invalid CSRF token'], 400);
+        // Commande pour planifier le script Python à 8h chaque jour
+        $output = shell_exec('echo "0 8 * * * /chemin/vers/python /chemin/vers/votre_script.py" | crontab -');
+
+        if (!$output) {
+            return new JsonResponse(['success' => false, 'message' => 'Erreur lors de la planification de la tâche']);
         }
 
-        // Exécutez le script Python
-        $process = new Process(['python', 'C:\\Users\\kbenlakbir\\collecteData.py']); // Modifiez le chemin vers votre script
-        $process->run();
-
-        // Vérifiez si le script a été exécuté avec succès
-        if (!$process->isSuccessful()) {
-            return new JsonResponse(['success' => false, 'message' => "Erreur lors de l'exécution du script Python"]);
-        }
-
-        // Mettre à jour la date de dernière mise à jour après le rafraîchissement des données
-        $lastUpdated = new \DateTime('now');
-        $this->session->set('last_updated', $lastUpdated);
-
-        return new JsonResponse(['success' => true, 'message' => 'Les données ont été bien rafraîchies', 'last_updated' => $lastUpdated->format('Y-m-d H:i:s')]);
+        return new JsonResponse(['success' => true, 'message' => 'La tâche a été planifiée avec succès pour 8h chaque jour']);
     }
 }

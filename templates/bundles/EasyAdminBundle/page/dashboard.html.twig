@@ -5,33 +5,77 @@
         .container {
             text-align: center;
             margin-top: 50px;
-            font-family: 'Roboto', sans-serif; /* Police moderne */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .card {
+            background: rgb(255, 255, 255);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.19);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            color:black;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgb(255, 255, 255);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card-header {
+            background: rgb(255, 255, 255);
+            color: #111111;
+            padding: 20px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-body {
+            padding: 20px;
+            position: relative;
+            z-index: 2;
         }
 
         .refresh-button {
-            background-color: #007bff;
+            background-color: #111111;
             color: #fff;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease; /* Transition pour hover et clic */
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 20px;
         }
 
         .refresh-button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05); /* Agrandir légèrement au survol */
+            background-color: #ff8400;
+            transform: scale(1.05);
         }
 
         .refresh-button:active {
-            transform: scale(0.95); /* Réduire légèrement lors du clic */
+            transform: scale(0.95);
         }
 
         .refresh-text {
-            font-size: 24px; /* Augmentation de la taille de la police */
+            font-size: 20px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #333; /* Couleur de texte douce */
+            color: #333;
         }
 
         #loading {
@@ -40,7 +84,7 @@
         }
 
         .loading-text {
-            color: #dc3545; /* Utilisation d'une classe pour le style du texte de chargement */
+            color: #dc3545;
             margin-top: 10px;
             font-size: 18px;
         }
@@ -57,77 +101,165 @@
         .alert {
             margin-top: 20px;
         }
+
+        .header-card {
+            background: linear-gradient(45deg, orange, black);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+            position: relative;
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(45deg, rgba(255, 165, 0, 0.3), rgba(0, 0, 0, 0.3));
+            z-index: 1;
+        }
+
+        .header-card img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+            z-index: 2;
+        }
+
+        .header-card-text {
+            flex-grow: 1;
+            z-index: 2;
+            position: relative; /* Revenir à la position relative pour les éléments texte */
+             /* Fond blanc pour cacher l'image agrandie sous le texte */
+            padding: 20px;
+        }
+
+        .header-card h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #ffffff;
+        }
+
+        .header-card p {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        .header-card .icon {
+            font-size: 50px;
+            margin-right: 20px;
+            z-index: 2;
+            position: relative; /* Position relative pour pouvoir positionner l'image absolument */
+            width: 300px; /* Largeur de la carte */
+            height: 200px; /* Hauteur de la carte */
+            overflow: hidden; /* Masque le contenu débordant */
+        }
+
+        .enlarged-image {
+            position: absolute; /* Position absolue par rapport à .header-card */
+            top: -50px; /* Position verticale ajustée pour déborder */
+            left: -20px; /* Position horizontale ajustée pour déborder */
+             /* Hauteur agrandie (100% + 2x20px de débordement) */
+            z-index: 1; /* Met l'image au-dessus du texte (z-index par défaut est 0) */
+        }
+
+
     </style>
 
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <div class="container mt-5">
+        <div class="header-card">
+            <img src="build/images/assistant.png" style="width:250px;" class="enlarged-image">
+            <div class="header-card-text text-center">
+
+                <div style="width: 60%; margin: 0 auto; text-align: justify;">
+                    <h2>Bonjour {{ username }}!</h2>
+                    <p>Bienvenue sur l'interface d'administration. Cette page vous permet de rafraîchir les données pour assurer leur précision et leur actualité. Veuillez utiliser cette fonctionnalité avec précaution.</p>
+                </div>
+
+            </div>
+        </div>
+
+
         <div class="row justify-content-center">
             <div class="col-md-8 text-center">
-                <h1 class="display-4">Gestion des données</h1>
-                <p class="lead">Cliquez sur le bouton ci-dessous pour mettre à jour les données.</p>
-                <div id="initialMessage" class="alert alert-info" role="alert">Les données sont à jour.</div>
-                <p id="lastUpdatedText">Dernière mise à jour : Chargement en cours...</p>
-                <p class="refresh-text">Rafraîchir les données</p>
-                <button id="refreshButton" class="refresh-button">Rafraîchir</button>
-                <div id="loading" class="py-5">
-                    <p class="loading-text">Cela va prendre quelques minutes, veuillez patienter</p>
-                    <img class="loading-image" src="build/images/hourglass.gif" alt="Loading GIF">
+                <div class="card">
+                    <div class="card-header">
+                        Gestion des données
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">Cliquez sur le bouton ci-dessous pour mettre à jour les données.</p>
+                        <div id="initialMessage" class="alert " role="alert">Les données sont à jour.</div>
+                        <p id="lastUpdatedText">Dernière mise à jour : Chargement en cours...</p>
+                        <p class="refresh-text">Rafraîchir les données</p>
+                        <button id="refreshButton" class="refresh-button">Rafraîchir</button>
+                        <div id="loading" class="py-5">
+                            <p class="loading-text">Cela va prendre quelques minutes, veuillez patienter</p>
+                            <img class="loading-image" src="build/images/hourglass.gif" style="width:100px;" alt="Loading GIF">
+                        </div>
+                        <div id="message"></div>
+                    </div>
                 </div>
-                <div id="message"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Fonction pour récupérer la date et l'heure de la dernière mise à jour
-        function fetchLastUpdated() {
-            fetch('{{ path('admin_last_updated') }}', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('lastUpdatedText').innerText = 'Dernière mise à jour : ' + data.last_updated;
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération de la dernière mise à jour', error);
-                });
+        function updateLastUpdatedDate() {
+            var now = new Date();
+            var lastUpdated = now.toLocaleString('fr-FR');
+            document.getElementById('lastUpdatedText').textContent = 'Dernière mise à jour : ' + lastUpdated;
         }
 
-        // Appeler la fonction au chargement de la page pour afficher la dernière mise à jour initiale
+        function fetchLastUpdated() {
+            var lastUpdated = localStorage.getItem('lastUpdated');
+            var now = new Date();
+            var formattedDate = lastUpdated ? lastUpdated : now.toLocaleTimeString('fr-FR');
+            document.getElementById('lastUpdatedText').textContent = 'Dernière mise à jour : ' + formattedDate;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             fetchLastUpdated();
         });
 
-        // Ajouter l'écouteur d'événement pour le bouton de rafraîchissement
         document.getElementById('refreshButton').addEventListener('click', function() {
             document.getElementById('initialMessage').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
-            fetch('{{ path('admin_refresh_data') }}', {
-                method: 'POST',
+
+            fetch('http://localhost:5000/transfer_data', {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': '{{ csrf_token('refresh_data') }}'
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.message) {
                         document.getElementById('message').innerHTML = '<div class="alert alert-success" role="alert">' + data.message + '</div>';
-                        fetchLastUpdated(); // Mettre à jour la date de dernière mise à jour après le rafraîchissement
+                        updateLastUpdatedDate();
                     } else {
-                        document.getElementById('message').innerHTML = '<div class="alert alert-danger" role="alert">' + data.message + '</div>';
+                        document.getElementById('message').innerHTML = '<div class="alert alert-danger" role="alert">' + data.error + '</div>';
                     }
                 })
                 .catch(error => {
                     document.getElementById('message').innerHTML = '<div class="alert alert-danger" role="alert">Erreur lors du rafraîchissement des données.</div>';
+                    console.error('Erreur lors du rafraîchissement des données', error);
                 })
                 .finally(() => {
                     setTimeout(function() {
                         document.getElementById('loading').style.display = 'none';
-                    }, 3000); // Durée de votre processus de rafraîchissement
+                    }, 3000);
                 });
         });
     </script>

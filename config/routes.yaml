@@ -19,7 +19,10 @@ admin_last_updated:
     path: /admin/last_updated
     controller: App\Controller\Admin\AcceuilController::getLastUpdated
     methods: ['GET']
-
+admin_schedule_daily_task:
+    path: /admin/schedule-daily-task
+    controller: App\Controller\Admin\AcceuilController::scheduleDailyTask
+    methods: ['POST']
 GI:
     path: /Gincident
     controller: App\Controller\HomeController::incident

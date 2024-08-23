@@ -51,6 +51,11 @@ class Incident
      */
     private $resolu;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $commentaire;
+
 
 
 
@@ -139,6 +144,18 @@ class Incident
     public function setResolu(bool $resolu): self
     {
         $this->resolu = $resolu;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?string $commentaire): self
+    {
+        $this->commentaire = $commentaire;
 
         return $this;
     }

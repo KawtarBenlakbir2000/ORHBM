@@ -30,7 +30,7 @@
     <style>
 
         body {
-            background-color: #f8f9fa;
+            background-color: rgb(248, 249, 250);
         }
 
         .list-group{
@@ -430,7 +430,7 @@
                     <div class="container d-flex justify-content-center" >
 
                         <ul class="list-group mt-5  ">
-                            <h5 class="card-header-text">List des incidents </h5>
+                           <div class="card-header text-center "><h5 class="fw-bold mb-1">List des incidents </h5></div>
                             {%for incident in incident %}
                                 <li class="list-group-item d-flex justify-content-between align-content-center" style="border: 1px solid #ddd;border-radius: 10px;box-shadow: 0 4px 8px rgb(166,166,166);transition: box-shadow 0.3s ease;">
 
@@ -494,11 +494,16 @@
                                                                             <h6>Solution</h6><span class="mr-2 fa fa-reorder"></span>
                                                                         </div>
                                                                         <div id="BodySolut{{ incident.id }}" class="collapse card-body solut1">
-                                                                            {% if incident.solution %}
+
+                                                                            <div><span style="font-family: Arial">Commentaire :</span>{% if incident.commentaire %}{{ incident.commentaire}}{% else %}
+                                                                                    Aucun commentaire
+                                                                                {% endif %}</div>
+
+                                                                            <div class="py-2"> <span style="font-family: Arial">Solution :</span>{% if incident.solution %}
                                                                                 <a href="{{ asset('uploads/'~ incident.solution) }}" target="_blank">Télécharger la solution</a>
                                                                             {% else %}
                                                                                 Aucune solution uploadée
-                                                                            {% endif %}
+                                                                               {% endif %}</div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -558,7 +563,7 @@
 
                     var ongletTable = $('#myTable2').DataTable({
                         paging: true,
-                        pageLength: 7,
+                        pageLength: 5,
                         searching: true,
                         language: {
                             lengthMenu: "Afficher _MENU_ ",
@@ -740,6 +745,11 @@
             <!-- DataTables JavaScript -->
 
         {% endblock %}
+        <footer class="footer mt-auto py-3" style="background-color: #f8f9fa; border-top: 1px solid #e7e7e7;">
+            <div class="container text-center">
+                <span class="text-muted">© 2024 Sofrecom SN3. All Rights Reserved.</span>
+            </div>
+        </footer>
 
     </div>
 {% endblock %}

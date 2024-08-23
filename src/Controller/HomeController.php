@@ -66,13 +66,14 @@ class HomeController extends AbstractController
         $isAdmin = $this->authChecker->isGranted('ROLE_ADMIN');
         $username = $this->getUsername();
         $onglets = $this->getDoctrine()->getRepository(Onglet::class)->findAll();
-
+        $module = $this->getDoctrine()->getRepository(Module::class)->findAll();
 
 
         return $this->render('home\detailsInterface.html.twig', [
             'username' => $username,
             'onglets' => $onglets,
-            'isAdmin'=>$isAdmin
+            'isAdmin'=>$isAdmin,
+            'modules'=>$module
         ]);
     }
 
